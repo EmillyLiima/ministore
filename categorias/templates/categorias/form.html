@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">{{ 'Editar Categoria' if categoria else 'Nova Categoria' }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome da Categoria *</label>
+                        <input type="text" class="form-control" id="nome" name="nome" value="{{ categoria.nome if categoria else '' }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="descricao" name="descricao" rows="3">{{ categoria.descricao if categoria else '' }}</textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('categorias.listar') }}" class="btn btn-secondary">
+                            Voltar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            {{ 'Salvar Alterações' if categoria else 'Cadastrar' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
