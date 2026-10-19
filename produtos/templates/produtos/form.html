@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">{{ 'Editar Produto' if produto else 'Novo Produto' }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="codigo" class="form-label">Código *</label>
+                            <input type="text" class="form-control" id="codigo" name="codigo" value="{{ produto.codigo if produto else '' }}" placeholder="Ex: PRD001" required>
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label for="nome" class="form-label">Nome do Produto *</label>
+                            <input type="text" class="form-control" id="nome" name="nome" value="{{ produto.nome if produto else '' }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_categoria" class="form-label">Categoria *</label>
+                            <select class="form-control" id="id_categoria" name="id_categoria" required>
+                                <option value="">Selecione uma categoria...</option>
+                                {% for cat in categorias %}
+                                    <option value="{{ cat.id }}" {% if produto and produto.id_categoria == cat.id %}selected{% endif %}>
+                                        {{ cat.nome }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="preco" class="form-label">Preço (R$) *</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="preco" name="preco" value="{{ produto.preco if produto else '' }}" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="descricao" name="descricao" rows="3">{{ produto.descricao if produto else '' }}</textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('produtos.listar') }}" class="btn btn-secondary">
+                            Voltar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            {{ 'Salvar Alterações' if produto else 'Cadastrar' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

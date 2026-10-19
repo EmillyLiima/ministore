@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Produtos</h2>
+    <a href="{{ url_for('produtos.novo') }}" class="btn btn-primary">
+        + Novo Produto
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Código</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Categoria</th>
+                    <th scope="col">Preço</th>
+                    <th scope="col" class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                <tr>
+                    <td>{{ produto.id }}</td>
+                    <td><code>{{ produto.codigo }}</code></td>
+                    <td><strong>{{ produto.nome }}</strong></td>
+                    <td><span class="badge bg-secondary">{{ produto.categoria_nome or 'Sem Categoria' }}</span></td>
+                    <td>R$ {{ "%.2f"|format(produto.preco) }}</td>
+                    <td class="text-end">
+                        <a href="{{ url_for('produtos.editar', id=produto.id) }}" class="btn btn-sm btn-outline-secondary me-1">
+                            Editar
+                        </a>
+                        <form action="{{ url_for('produtos.excluir', id=produto.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                Excluir
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        Nenhum produto cadastrado.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
