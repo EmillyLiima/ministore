@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-9">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">Registrar Nova Venda</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-4">
+                        <label for="id_cliente" class="form-label">Cliente *</label>
+                        <select class="form-control" id="id_cliente" name="id_cliente" required>
+                            <option value="">Selecione um cliente...</option>
+                            {% for cli in clientes %}
+                                <option value="{{ cli.id }}">{{ cli.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <h5>Itens do Pedido</h5>
+                    <div id="itens-container">
+                        <div class="row mb-3 item-linha">
+                            <div class="col-md-7">
+                                <label class="form-label">Produto *</label>
+                                <select class="form-control" name="id_produto[]" required>
+                                    <option value="">Selecione um produto...</option>
+                                    {% for p in produtos %}
+                                        <option value="{{ p.id }}">{{ p.nome }} - R$ {{ "%.2f"|format(p.preco) }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Quantidade *</label>
+                                <input type="number" min="1" value="1" class="form-control" name="quantidade[]" required>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="button" class="btn btn-outline-danger w-100" onclick="removerLinha(this)">Remover</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-secondary mb-4" onclick="adicionarLinha()">+ Adicionar Outro Produto</button>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('vendas.listar') }}" class="btn btn-secondary">Voltar</a>
+                        <button type="submit" class="btn btn-success">Finalizar Venda</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function adicionarLinha() {
+    const container = document.getElementById('itens-container');
+    const primeiraLinha = container.querySelector('.item-linha');
+    const novaLinha = primeiraLinha.cloneNode(true);
+    novaLinha.querySelector('select').value = '';
+    novaLinha.querySelector('input').value = '1';
+    container.appendChild(novaLinha);
+}
+
+function removerLinha(btn) {
+    const container = document.getElementById('itens-container');
+    if (container.querySelectorAll('.item-linha').length > 1) {
+        btn.closest('.item-linha').remove();
+    } else {
+        alert('A venda precisa conter pelo menos um produto!');
+    }
+}
+</script>
+{% endblock %}

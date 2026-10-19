@@ -4,6 +4,7 @@ from clientes.routes import clientes_bp
 from dashboard.routes import dashboard_bp
 from categorias.routes import categorias_bp
 from produtos.routes import produtos_bp
+from vendas.routes import vendas_bp
 
 app = Flask(__name__)
 app.secret_key = 'ministore-secret-key-2026'
@@ -12,6 +13,7 @@ app.register_blueprint(clientes_bp)
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(categorias_bp, url_prefix='/categorias')
 app.register_blueprint(produtos_bp, url_prefix='/produtos')
+app.register_blueprint(vendas_bp, url_prefix='/vendas')
 
 
 if __name__ == '__main__':

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Detalhes da Venda #{{ venda.id }}</h4>
+        <span class="badge bg-primary fs-6">{{ venda.data_venda.strftime('%d/%m/%Y %H:%M') if venda.data_venda else '-' }}</span>
+    </div>
+    <div class="card-body">
+        <p><strong>Cliente:</strong> {{ venda.cliente_nome }}</p>
+        <p><strong>E-mail:</strong> {{ venda.cliente_email or '-' }}</p>
+
+        <h5 class="mt-4 mb-3">Produtos Comprados</h5>
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Código</th>
+                    <th>Produto</th>
+                    <th>Preço Unitário</th>
+                    <th>Quantidade</th>
+                    <th class="text-end">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in itens %}
+                <tr>
+                    <td><code>{{ item.produto_codigo }}</code></td>
+                    <td>{{ item.produto_nome }}</td>
+                    <td>R$ {{ "%.2f"|format(item.preco_unitario) }}</td>
+                    <td>{{ item.quantidade }}</td>
+                    <td class="text-end">R$ {{ "%.2f"|format(item.subtotal) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="table-light">
+                    <td colspan="4" class="text-end"><strong>Total da Venda:</strong></td>
+                    <td class="text-end"><strong class="text-success fs-5">R$ {{ "%.2f"|format(venda.total) }}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="mt-4">
+            <a href="{{ url_for('vendas.listar') }}" class="btn btn-secondary">Voltar para a Lista</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

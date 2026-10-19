@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Vendas Realizadas</h2>
+    <a href="{{ url_for('vendas.novo') }}" class="btn btn-primary">
+        + Nova Venda
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Total</th>
+                    <th scope="col" class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venda in vendas %}
+                <tr>
+                    <td>{{ venda.id }}</td>
+                    <td><strong>{{ venda.cliente_nome }}</strong></td>
+                    <td>{{ venda.data_venda.strftime('%d/%m/%Y %H:%M') if venda.data_venda else '-' }}</td>
+                    <td><strong class="text-success">R$ {{ "%.2f"|format(venda.total) }}</strong></td>
+                    <td class="text-end">
+                        <a href="{{ url_for('vendas.detalhes', id=venda.id) }}" class="btn btn-sm btn-outline-info me-1">
+                            Ver Itens
+                        </a>
+                        <form action="{{ url_for('vendas.excluir', id=venda.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja cancelar/excluir esta venda?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                Excluir
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        Nenhuma venda registrada até o momento.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

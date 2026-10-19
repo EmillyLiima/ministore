@@ -1,31 +1,35 @@
-# dashboard/routes.py
-from flask import Blueprint, render_template, flash
+from flask import Blueprint, render_template
 from database import get_connection
-import mysql.connector
 
 dashboard_bp = Blueprint('dashboard', __name__, template_folder='templates')
 
 @dashboard_bp.route('/')
 def index():
-    conn = None
-    cursor = None
-    totais = {
-        'clientes': 0,
-        'categorias': 0,
-        'produtos': 0,
-        'vendas': 0
-    }
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute('SELECT COUNT(*) FROM clientes')
-        totais['clientes'] = cursor.fetchone()[0]
-        
-    except mysql.connector.Error as e:
-        flash(f'Erro ao carregar dashboard: {e}', 'danger')
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
 
-    finally:
-        if cursor: cursor.close()
-        if conn: conn.close()
-        
-    return render_template('index.html', totais=totais)
+    cursor.execute("SELECT COUNT(*) AS total FROM clientes")
+    total_clientes = cursor.fetchone()['total']
+
+    cursor.execute("SELECT COUNT(*) AS total FROM categorias")
+    total_categorias = cursor.fetchone()['total']
+
+    cursor.execute("SELECT COUNT(*) AS total FROM produtos")
+    total_produtos = cursor.fetchone()['total']
+
+    cursor.execute("SELECT COUNT(*) AS total, COALESCE(SUM(total), 0) AS faturamento FROM vendas")
+    res_vendas = cursor.fetchone()
+    total_vendas = res_vendas['total']
+    faturamento = res_vendas['faturamento']
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        'index.html',
+        total_clientes=total_clientes,
+        total_categorias=total_categorias,
+        total_produtos=total_produtos,
+        total_vendas=total_vendas,
+        faturamento=faturamento
+    )
